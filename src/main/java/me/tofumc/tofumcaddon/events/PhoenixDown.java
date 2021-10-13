@@ -51,10 +51,7 @@ public class PhoenixDown implements Listener {
         scheduler.scheduleSyncRepeatingTask(plugin, new Runnable() {
             public void run() {
                 for(Player p : Bukkit.getOnlinePlayers()){
-                    if (p.getInventory().getItemInMainHand().getItemMeta() == null) {
-                        continue;
-                    }
-                    if(p.getInventory().getItemInMainHand().getItemMeta().equals(myItem.getItemMeta()))
+                    if(myItem.getItemMeta().equals(p.getInventory().getItemInMainHand().getItemMeta())) //myItem不为null，不会触发空指针
                         p.setFireTicks(25);
                 }
             }
