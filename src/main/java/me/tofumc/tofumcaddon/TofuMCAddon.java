@@ -1,11 +1,21 @@
 package me.tofumc.tofumcaddon;
 
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerHead;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.skins.PlayerSkin;
+import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
+
 import me.tofumc.tofumcaddon.events.PhoenixDown;
 import me.tofumc.tofumcaddon.items.Antidote;
 import me.tofumc.tofumcaddon.items.ChaosPearl;
 import me.tofumc.tofumcaddon.items.FreshFlesh;
 import me.tofumc.tofumcaddon.items.Quickdote;
 import me.tofumc.tofumcaddon.items.MobIncapacitator;
+
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -21,37 +31,17 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import me.mrCookieSlime.Slimefun.cscorelib2.item.CustomItem;
-import me.mrCookieSlime.Slimefun.cscorelib2.skull.SkullItem;
-
 public class TofuMCAddon extends JavaPlugin implements SlimefunAddon {
+    public static TofuMCAddon INSTANCE;
 
     @Override
     public void onEnable() {
+        INSTANCE = this;
         //Category
         NamespacedKey categoryID = new NamespacedKey(this, "TofuMC");
-        CustomItem categoryItem = new CustomItem(SkullItem.fromBase64("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWU1YWFmOGYxZjhjZTg0MTlhM2Y1ZWFmODNmMmE1MWY1YTRlNThkNTc2NjRjM2VkYzFkNjI5NGZkZmY2NjBkOSJ9fX0="), "&4豆腐工艺");
+        CustomItemStack categoryItem = new CustomItemStack(PlayerHead.getItemStack(PlayerSkin.fromBase64("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWU1YWFmOGYxZjhjZTg0MTlhM2Y1ZWFmODNmMmE1MWY1YTRlNThkNTc2NjRjM2VkYzFkNjI5NGZkZmY2NjBkOSJ9fX0=")), "&4豆腐工艺");
 
-        Category category = new Category(categoryID, categoryItem);
-
-        ItemStack[] NORECIPE = {null, null, null, null, null, null, null, null, null};
-
-        /*
-        Template For Item
-        SlimefunItemStack Stack = new SlimefunItemStack("TOFU_", Material., "§f", "", "&7");
-        ItemStack[] tempRecipe = {
-                new SlimefunItemStack(bitStack, 64), null, null,
-                null, null, null,
-                null, null, null
-        };
-        SlimefunItem sf = new SlimefunItem(category, Stack, RecipeType.NULL, NORECIPE);
-        sf.register(this);
-         */
+        ItemGroup category = new ItemGroup(categoryID, categoryItem);
 
         //Bit
         SlimefunItemStack bitStack = new SlimefunItemStack("TOFUMC_BIT", Material.WHITE_DYE, "§f§l豆腐", "", "&7新鲜的豆腐嘞！");
@@ -93,7 +83,7 @@ public class TofuMCAddon extends JavaPlugin implements SlimefunAddon {
         };
         SlimefunItem sfPhoenixDown = new SlimefunItem(category, phoenixDownStack, RecipeType.ENHANCED_CRAFTING_TABLE, phoenixDown);
         sfPhoenixDown.register(this);
-        final PhoenixDown phoenixDownEvent = new PhoenixDown(this, phoenixDownStack);
+        new PhoenixDown(this, phoenixDownStack);
 
 
         //Dragon Eye
@@ -145,7 +135,7 @@ public class TofuMCAddon extends JavaPlugin implements SlimefunAddon {
                 new SlimefunItemStack(freshFleshStack, 1), new SlimefunItemStack(freshFleshStack, 1), new SlimefunItemStack(freshFleshStack, 1)
         };
         quickodoteStack.addUnsafeEnchantment(Enchantment.QUICK_CHARGE, 1);
-        quickodoteStack.addFlags(new ItemFlag[]{ItemFlag.HIDE_ENCHANTS});
+        quickodoteStack.getItemMeta().addItemFlags(ItemFlag.HIDE_ENCHANTS);
         Quickdote sfQuickodote = new Quickdote(category, quickodoteStack, RecipeType.ENHANCED_CRAFTING_TABLE, quickodoteRecipe);
         sfQuickodote.register(this);
 
@@ -178,7 +168,7 @@ public class TofuMCAddon extends JavaPlugin implements SlimefunAddon {
         };
         PotionMeta soulEssenceMeta = (PotionMeta) soulEssenceStack.getItemMeta();
         soulEssenceMeta.setColor(Color.WHITE);
-        soulEssenceMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_POTION_EFFECTS});
+        soulEssenceMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
         soulEssenceStack.setItemMeta(soulEssenceMeta);
         SlimefunItem sfSoulEssence = new SlimefunItem(category, soulEssenceStack, RecipeType.ENHANCED_CRAFTING_TABLE, essRe);
         sfSoulEssence.register(this);
@@ -292,8 +282,8 @@ public class TofuMCAddon extends JavaPlugin implements SlimefunAddon {
         };
         ItemMeta aegisMeta = aegisStack.getItemMeta();
         aegisMeta.setUnbreakable(true);
-        aegisMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_UNBREAKABLE});
-        aegisMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_POTION_EFFECTS});
+        aegisMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        aegisMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
         BlockStateMeta aegisBSMeta = (BlockStateMeta) aegisMeta;
         Banner aegisBanner = (Banner) aegisBSMeta.getBlockState();
         aegisBanner.setBaseColor(DyeColor.BROWN);
@@ -304,8 +294,10 @@ public class TofuMCAddon extends JavaPlugin implements SlimefunAddon {
         sfAegis.register(this);
 
         //MobIncapacitator
-        SlimefunItemStack mobIncapacitatorStack = new SlimefunItemStack("TOFU_MOB_INCAPACITATOR", SkullItem.fromBase64("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTg4MzJjMTQ2NmM4NDFjYzc5ZDVmMTAyOTVkNDY0Mjc5OTY3OTc1YTI0NTFjN2E1MzNjNzk5Njg5NzQwOGJlYSJ9fX0="),
-                "§5§l豆腐能涌动核心", "", "&7它涌动出一股奇怪的能量影响着周围的生物...");
+        SlimefunItemStack mobIncapacitatorStack = new SlimefunItemStack("TOFU_MOB_INCAPACITATOR", PlayerHead.getItemStack(PlayerSkin.fromBase64("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTg4MzJjMTQ2NmM4NDFjYzc5ZDVmMTAyOTVkNDY0Mjc5OTY3OTc1YTI0NTFjN2E1MzNjNzk5Njg5NzQwOGJlYSJ9fX0=")),
+                "§5§l豆腐能涌动核心",
+                "",
+                "&7它涌动出一股奇怪的能量影响着周围的生物...");
         ItemStack[] incapacitatorRecipe = {
                 new SlimefunItemStack(ionCellStack, 1), new SlimefunItemStack(ionTubeStack, 1), new SlimefunItemStack(ionCellStack, 1),
                 new SlimefunItemStack(dragonEyeStack, 1), new SlimefunItemStack(ToFuallStack, 1), new SlimefunItemStack(dragonEyeStack, 1),
